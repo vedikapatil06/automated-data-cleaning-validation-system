@@ -43,3 +43,44 @@ Retail / E-commerce
 ## Project Status
 
 Sprint 1 - Project Setup and Dataset Selection
+
+
+## Sprint 2: Data Profiling Module
+
+### Overview
+Implemented the initial data profiling module for the Automated Data Cleaning & Validation System.
+
+### Features
+- CSV dataset loading and analysis
+- Row and column counts
+- Missing-value detection and percentages
+- Duplicate-row detection
+- Data type and semantic column detection
+- Numeric statistics
+- Suspicious age and email detection
+- Date-format inconsistency detection
+- Categorical value summaries
+- JSON profiling report generation
+
+### Output
+The profiling report is saved to:
+`results/profiling_report.json`
+
+### Automated Testing
+Automated tests are implemented using pytest.
+
+Test coverage includes:
+- Semantic type detection
+- Missing-value detection
+- Duplicate-row detection
+- Invalid email detection
+- Suspicious age detection
+- Multiple date-format detection
+
+Latest test result: **6 passed**.
+
+### How to Run
+Activate the virtual environment and execute:
+
+```bash
+python module1_profiling/profiler.py

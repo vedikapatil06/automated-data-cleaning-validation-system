@@ -1,0 +1,231 @@
+{
+    "dataset_name": "raw_dataset.csv",
+    "total_rows": 15,
+    "total_columns": 10,
+    "duplicate_rows": 1,
+    "total_missing_values": 1,
+    "columns": {
+        "customer_id": {
+            "data_type": "object",
+            "semantic_type": "identifier",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 14,
+            "suspicious_values": []
+        },
+        "customer_name": {
+            "data_type": "object",
+            "semantic_type": "categorical",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 14,
+            "suspicious_values": [],
+            "top_values": [
+                {
+                    "value": "Isha Pawar",
+                    "count": 2
+                },
+                {
+                    "value": "Aarav Sharma",
+                    "count": 1
+                },
+                {
+                    "value": "Rahul Desai",
+                    "count": 1
+                },
+                {
+                    "value": "Ananya Joshi",
+                    "count": 1
+                },
+                {
+                    "value": "Vedant Kulkarni",
+                    "count": 1
+                }
+            ]
+        },
+        "email": {
+            "data_type": "object",
+            "semantic_type": "email",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 14,
+            "suspicious_values": [
+                {
+                    "row": 4,
+                    "value": "invalid-email",
+                    "issue": "Potentially invalid email format",
+                    "severity": "warning"
+                }
+            ]
+        },
+        "age": {
+            "data_type": "float64",
+            "semantic_type": "age",
+            "missing_values": 1,
+            "missing_percentage": 6.67,
+            "unique_values": 13,
+            "suspicious_values": [
+                {
+                    "row": 8,
+                    "value": "200.0",
+                    "issue": "Age outside the expected range 0-120",
+                    "severity": "warning"
+                }
+            ],
+            "statistics": {
+                "minimum": 19.0,
+                "maximum": 200.0,
+                "mean": 38.93,
+                "median": 26.5
+            }
+        },
+        "city": {
+            "data_type": "object",
+            "semantic_type": "categorical",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 3,
+            "suspicious_values": [],
+            "top_values": [
+                {
+                    "value": "Pune",
+                    "count": 6
+                },
+                {
+                    "value": "Mumbai",
+                    "count": 5
+                },
+                {
+                    "value": "Sangli",
+                    "count": 4
+                }
+            ]
+        },
+        "purchase_date": {
+            "data_type": "object",
+            "semantic_type": "date",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 14,
+            "suspicious_values": [],
+            "date_format_analysis": {
+                "format_counts": {
+                    "YYYY-MM-DD": 14,
+                    "YYYY/MM/DD": 1
+                },
+                "unrecognized_format_count": 0,
+                "has_multiple_formats": true
+            }
+        },
+        "product": {
+            "data_type": "object",
+            "semantic_type": "categorical",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 6,
+            "suspicious_values": [],
+            "top_values": [
+                {
+                    "value": "Laptop",
+                    "count": 3
+                },
+                {
+                    "value": "Phone",
+                    "count": 3
+                },
+                {
+                    "value": "Keyboard",
+                    "count": 3
+                },
+                {
+                    "value": "Headphones",
+                    "count": 2
+                },
+                {
+                    "value": "Mouse",
+                    "count": 2
+                }
+            ]
+        },
+        "quantity": {
+            "data_type": "int64",
+            "semantic_type": "numeric",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 3,
+            "suspicious_values": [],
+            "statistics": {
+                "minimum": 1.0,
+                "maximum": 3.0,
+                "mean": 1.33,
+                "median": 1.0
+            }
+        },
+        "price": {
+            "data_type": "int64",
+            "semantic_type": "numeric",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 6,
+            "suspicious_values": [],
+            "statistics": {
+                "minimum": 500.0,
+                "maximum": 55000.0,
+                "mean": 17106.67,
+                "median": 12000.0
+            }
+        },
+        "payment_method": {
+            "data_type": "object",
+            "semantic_type": "categorical",
+            "missing_values": 0,
+            "missing_percentage": 0.0,
+            "unique_values": 3,
+            "suspicious_values": [],
+            "top_values": [
+                {
+                    "value": "UPI",
+                    "count": 6
+                },
+                {
+                    "value": "Card",
+                    "count": 6
+                },
+                {
+                    "value": "Cash",
+                    "count": 3
+                }
+            ]
+        }
+    },
+    "data_quality_warnings": [
+        {
+            "column": "email",
+            "issue": "Suspicious values detected",
+            "count": 1,
+            "severity": "warning"
+        },
+        {
+            "column": "age",
+            "issue": "Missing values detected",
+            "count": 1,
+            "severity": "warning"
+        },
+        {
+            "column": "age",
+            "issue": "Suspicious values detected",
+            "count": 1,
+            "severity": "warning"
+        },
+        {
+            "column": "purchase_date",
+            "issue": "Multiple date formats detected",
+            "severity": "warning"
+        },
+        {
+            "issue": "Duplicate rows detected",
+            "count": 1,
+            "severity": "warning"
+        }
+    ]
+}
