@@ -11,7 +11,24 @@
             "missing_values": 0,
             "missing_percentage": 0.0,
             "unique_values": 14,
-            "suspicious_values": []
+            "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 14,
+                "uniqueness_percentage": 93.33
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            }
         },
         "customer_name": {
             "data_type": "object",
@@ -20,6 +37,23 @@
             "missing_percentage": 0.0,
             "unique_values": 14,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 14,
+                "uniqueness_percentage": 93.33
+            },
+            "pii_analysis": {
+                "pii_detected": true,
+                "pii_type": "PERSON_NAME",
+                "confidence": "high",
+                "detection_method": "column_name"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            },
             "top_values": [
                 {
                     "value": "Isha Pawar",
@@ -56,7 +90,24 @@
                     "issue": "Potentially invalid email format",
                     "severity": "warning"
                 }
-            ]
+            ],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 14,
+                "uniqueness_percentage": 93.33
+            },
+            "pii_analysis": {
+                "pii_detected": true,
+                "pii_type": "EMAIL",
+                "confidence": "high",
+                "detection_method": "column_name"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            }
         },
         "age": {
             "data_type": "float64",
@@ -72,12 +123,48 @@
                     "severity": "warning"
                 }
             ],
+            "cardinality": {
+                "total_non_null_values": 14,
+                "unique_values": 13,
+                "uniqueness_percentage": 92.86
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 14,
+                "non_numeric_values": 0,
+                "issue": null
+            },
             "statistics": {
                 "minimum": 19.0,
                 "maximum": 200.0,
                 "mean": 38.93,
                 "median": 26.5
-            }
+            },
+            "advanced_statistics": {
+                "count": 14,
+                "mean": 38.93,
+                "median": 26.5,
+                "standard_deviation": 46.53,
+                "minimum": 19.0,
+                "maximum": 200.0,
+                "q1": 24.25,
+                "q3": 29.75,
+                "iqr": 5.5
+            },
+            "outliers": [
+                {
+                    "row": 8,
+                    "value": 200.0,
+                    "lower_limit": 16.0,
+                    "upper_limit": 38.0
+                }
+            ]
         },
         "city": {
             "data_type": "object",
@@ -86,6 +173,23 @@
             "missing_percentage": 0.0,
             "unique_values": 3,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 3,
+                "uniqueness_percentage": 20.0
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            },
             "top_values": [
                 {
                     "value": "Pune",
@@ -108,6 +212,23 @@
             "missing_percentage": 0.0,
             "unique_values": 14,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 14,
+                "uniqueness_percentage": 93.33
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            },
             "date_format_analysis": {
                 "format_counts": {
                     "YYYY-MM-DD": 14,
@@ -124,6 +245,23 @@
             "missing_percentage": 0.0,
             "unique_values": 6,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 6,
+                "uniqueness_percentage": 40.0
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            },
             "top_values": [
                 {
                     "value": "Laptop",
@@ -154,12 +292,48 @@
             "missing_percentage": 0.0,
             "unique_values": 3,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 3,
+                "uniqueness_percentage": 20.0
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 15,
+                "non_numeric_values": 0,
+                "issue": null
+            },
             "statistics": {
                 "minimum": 1.0,
                 "maximum": 3.0,
                 "mean": 1.33,
                 "median": 1.0
-            }
+            },
+            "advanced_statistics": {
+                "count": 15,
+                "mean": 1.33,
+                "median": 1.0,
+                "standard_deviation": 0.62,
+                "minimum": 1.0,
+                "maximum": 3.0,
+                "q1": 1.0,
+                "q3": 1.5,
+                "iqr": 0.5
+            },
+            "outliers": [
+                {
+                    "row": 10,
+                    "value": 3.0,
+                    "lower_limit": 0.25,
+                    "upper_limit": 2.25
+                }
+            ]
         },
         "price": {
             "data_type": "int64",
@@ -168,12 +342,60 @@
             "missing_percentage": 0.0,
             "unique_values": 6,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 6,
+                "uniqueness_percentage": 40.0
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 15,
+                "non_numeric_values": 0,
+                "issue": null
+            },
             "statistics": {
                 "minimum": 500.0,
                 "maximum": 55000.0,
                 "mean": 17106.67,
                 "median": 12000.0
-            }
+            },
+            "advanced_statistics": {
+                "count": 15,
+                "mean": 17106.67,
+                "median": 12000.0,
+                "standard_deviation": 21014.87,
+                "minimum": 500.0,
+                "maximum": 55000.0,
+                "q1": 1200.0,
+                "q3": 20000.0,
+                "iqr": 18800.0
+            },
+            "outliers": [
+                {
+                    "row": 2,
+                    "value": 55000.0,
+                    "lower_limit": -27000.0,
+                    "upper_limit": 48200.0
+                },
+                {
+                    "row": 8,
+                    "value": 55000.0,
+                    "lower_limit": -27000.0,
+                    "upper_limit": 48200.0
+                },
+                {
+                    "row": 15,
+                    "value": 55000.0,
+                    "lower_limit": -27000.0,
+                    "upper_limit": 48200.0
+                }
+            ]
         },
         "payment_method": {
             "data_type": "object",
@@ -182,6 +404,23 @@
             "missing_percentage": 0.0,
             "unique_values": 3,
             "suspicious_values": [],
+            "cardinality": {
+                "total_non_null_values": 15,
+                "unique_values": 3,
+                "uniqueness_percentage": 20.0
+            },
+            "pii_analysis": {
+                "pii_detected": false,
+                "pii_type": null,
+                "confidence": "none",
+                "detection_method": "none"
+            },
+            "mixed_type_analysis": {
+                "mixed_types_detected": false,
+                "numeric_values": 0,
+                "non_numeric_values": 15,
+                "issue": null
+            },
             "top_values": [
                 {
                     "value": "UPI",

@@ -5,6 +5,15 @@ from collections import Counter
 
 import pandas as pd
 
+from module1_profiling.advanced_statistics import (
+    calculate_numeric_statistics,
+    detect_iqr_outliers,
+    calculate_cardinality
+)
+
+from module1_profiling.pii_detector import detect_pii_type
+from module1_profiling.type_analyzer import detect_mixed_types
+
 
 # --------------------------------------------------
 # PROJECT PATHS
@@ -182,6 +191,14 @@ def profile_dataset(file_path):
             "unique_values": int(series.nunique(dropna=True)),
             "suspicious_values": detect_suspicious_values(column, series)
         }
+                # Advanced profiling: cardinality
+        column_report["cardinality"] = calculate_cardinality(series)
+
+        # Advanced profiling: PII detection
+        column_report["pii_analysis"] = detect_pii_type(column, series)
+
+        # Advanced profiling: mixed data types
+        column_report["mixed_type_analysis"] = detect_mixed_types(series)
 
         # Numeric statistics.
         if pd.api.types.is_numeric_dtype(series):
@@ -207,6 +224,13 @@ def profile_dataset(file_path):
                     else None
                 )
             }
+                        # Advanced numeric statistics
+            column_report["advanced_statistics"] = (
+                calculate_numeric_statistics(series)
+            )
+
+            # Detect statistical outliers
+            column_report["outliers"] = detect_iqr_outliers(series)
 
         # Most frequent values for categorical columns.
         if semantic_type == "categorical":
