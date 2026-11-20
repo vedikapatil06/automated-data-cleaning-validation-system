@@ -1,0 +1,18 @@
+{
+    "generated_at": "2026-11-20T21:06:40.119274",
+    "total_operations": 2,
+    "cleaning_operations": [
+        {
+            "column": "age",
+            "action": "Missing values filled",
+            "method": "Median",
+            "fill_value": "20.0",
+            "missing_values": 2
+        },
+        {
+            "action": "Duplicate rows removed",
+            "duplicates_found": 1,
+            "duplicates_removed": 1
+        }
+    ]
+}
