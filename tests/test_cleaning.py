@@ -1,11 +1,15 @@
 import pandas as pd
 import pytest
 
-from module2_cleaning.cleaner import (
+
+
+from module2_cleaning.cleaner import(
     handle_missing_values,
     remove_duplicate_rows,
     correct_data_types,
-    clean_dataset
+    clean_dataset,
+    standardize_text_values,
+    handle_outliers
 )
 
 
@@ -94,3 +98,88 @@ def test_empty_csv_file(tmp_path):
 
     with pytest.raises(ValueError, match="input CSV file is empty"):
         clean_dataset(input_path=empty_file)
+
+
+
+def test_text_standardization():
+    df = pd.DataFrame({
+        "name": ["  Vedika  ", " Rahul", "Priya   Patil "],
+        "city": [" Pune ", "Mumbai  ", " Sangli"]
+    })
+
+    cleaned_df, log = standardize_text_values(df)
+
+    assert cleaned_df["name"].tolist() == [
+        "Vedika", "Rahul", "Priya Patil"
+    ]
+
+    assert cleaned_df["city"].tolist() == [
+        "Pune", "Mumbai", "Sangli"
+    ]
+
+    assert len(log) == 2
+
+def test_text_capitalization():
+    df = pd.DataFrame({
+        "city": ["pune", "MUMBAI", "sangli"],
+        "customer_name": ["vedika patil", "RAHUL", "priya"]
+    })
+
+    cleaned_df, log = standardize_text_values(df)
+
+    assert cleaned_df["city"].tolist() == [
+        "Pune", "Mumbai", "Sangli"
+    ]
+
+    assert cleaned_df["customer_name"].tolist() == [
+        "Vedika Patil", "Rahul", "Priya"
+    ]
+
+def test_email_format_preserved():
+    df = pd.DataFrame({
+        "email": ["  Vedika@Gmail.com  ", " Rahul@Yahoo.com "]
+    })
+
+    cleaned_df, log = standardize_text_values(df)
+
+    assert cleaned_df["email"].tolist() == [
+        "Vedika@Gmail.com",
+        "Rahul@Yahoo.com"
+    ]
+
+def test_text_standardization_with_missing_values():
+    df = pd.DataFrame({
+        "city": [" pune ", None, "mumbai"],
+        "email": ["test@gmail.com", None, "user@yahoo.com"]
+    })
+
+    cleaned_df, log = standardize_text_values(df)
+
+    assert cleaned_df["city"].iloc[0] == "Pune"
+    assert pd.isna(cleaned_df["city"].iloc[1])
+    assert cleaned_df["city"].iloc[2] == "Mumbai"
+
+    assert pd.isna(cleaned_df["email"].iloc[1])
+
+
+def test_outlier_treatment():
+    df = pd.DataFrame({
+        "age": [20, 22, 21, 23, 24, 200]
+    })
+
+    cleaned_df, log = handle_outliers(df)
+
+    assert cleaned_df["age"].max() < 200
+    assert len(log) == 1
+    assert log[0]["outliers_treated"] == 1
+
+
+def test_no_outliers():
+    df = pd.DataFrame({
+        "age": [20, 21, 22, 23, 24]
+    })
+
+    cleaned_df, log = handle_outliers(df)
+
+    assert cleaned_df["age"].tolist() == [20, 21, 22, 23, 24]
+    assert len(log) == 0

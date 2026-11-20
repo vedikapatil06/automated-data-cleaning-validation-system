@@ -1,5 +1,71 @@
 import pandas as pd
 
+def standardize_text_values(df):
+    """Standardize spaces and capitalization in text columns."""
+
+    cleaning_log = []
+
+    title_case_columns = {
+        "customer_name",
+        "name",
+        "city",
+        "product"
+    }
+
+    for column in df.select_dtypes(include=["object"]).columns:
+        original = df[column].copy()
+
+        df[column] = (
+            df[column]
+            .str.strip()
+            .str.replace(r"\s+", " ", regex=True)
+        )
+
+        if column.lower() in title_case_columns:
+            df[column] = df[column].str.title()
+
+        changed = int((original != df[column]).sum())
+
+        if changed > 0:
+            cleaning_log.append({
+                "column": column,
+                "action": "Text standardized",
+                "values_changed": changed
+            })
+
+    return df, cleaning_log
+
+def handle_outliers(df):
+    """Detect and cap numerical outliers using the IQR method."""
+
+    cleaning_log = []
+
+    for column in df.select_dtypes(include=["number"]).columns:
+        Q1 = df[column].quantile(0.25)
+        Q3 = df[column].quantile(0.75)
+        IQR = Q3 - Q1
+
+        lower_limit = Q1 - 1.5 * IQR
+        upper_limit = Q3 + 1.5 * IQR
+
+        outlier_count = int(
+            ((df[column] < lower_limit) |
+             (df[column] > upper_limit)).sum()
+        )
+
+        if outlier_count > 0:
+            df[column] = df[column].clip(
+                lower=lower_limit,
+                upper=upper_limit
+            )
+
+            cleaning_log.append({
+                "column": column,
+                "action": "Outliers capped using IQR",
+                "outliers_treated": outlier_count
+            })
+
+    return df, cleaning_log
 
 def handle_missing_values(df):
     """Handle missing values using median and mode imputation."""
@@ -141,9 +207,17 @@ def clean_dataset(
     df, duplicate_log = remove_duplicate_rows(df)
     cleaning_log.append(duplicate_log)
 
-    # Step 3: Correct data types
+    # Step 3: Standardize text values
+    df, text_log = standardize_text_values(df)
+    cleaning_log.extend(text_log)
+
+    # Step 4: Correct data types
     df, type_log = correct_data_types(df)
     cleaning_log.extend(type_log)
+
+    # Step 5: Handle numerical outliers
+    df, outlier_log = handle_outliers(df)
+    cleaning_log.extend(outlier_log)
 
     # Save cleaned dataset
     output_file = Path(output_path)

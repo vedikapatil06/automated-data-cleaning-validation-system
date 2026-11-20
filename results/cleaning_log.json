@@ -1,18 +1,39 @@
 {
-    "generated_at": "2026-11-20T21:06:40.119274",
-    "total_operations": 2,
+    "generated_at": "2026-11-20T22:18:18.332754",
+    "total_operations": 6,
     "cleaning_operations": [
         {
             "column": "age",
             "action": "Missing values filled",
             "method": "Median",
-            "fill_value": "20.0",
-            "missing_values": 2
+            "fill_value": "26.5",
+            "missing_values": 1
         },
         {
             "action": "Duplicate rows removed",
             "duplicates_found": 1,
             "duplicates_removed": 1
+        },
+        {
+            "column": "purchase_date",
+            "action": "Date type corrected",
+            "original_type": "object",
+            "new_type": "datetime64[ns]"
+        },
+        {
+            "column": "age",
+            "action": "Outliers capped using IQR",
+            "outliers_treated": 1
+        },
+        {
+            "column": "quantity",
+            "action": "Outliers capped using IQR",
+            "outliers_treated": 1
+        },
+        {
+            "column": "price",
+            "action": "Outliers capped using IQR",
+            "outliers_treated": 3
         }
     ]
 }
