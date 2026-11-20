@@ -164,7 +164,27 @@ def analyze_date_formats(series):
 def profile_dataset(file_path):
     """Generate a detailed profiling report for a CSV dataset."""
 
-    df = pd.read_csv(file_path)
+    file_path = Path(file_path)
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"Dataset file not found: {file_path}")
+
+    if not file_path.is_file():
+        raise ValueError(f"The provided path is not a file: {file_path}")
+
+    if file_path.suffix.lower() != ".csv":
+        raise ValueError("Invalid file format. Please provide a CSV file.")
+
+    try:
+        df = pd.read_csv(file_path)
+    except pd.errors.EmptyDataError:
+        raise ValueError("The CSV file is empty or has no column headers.")
+    except pd.errors.ParserError:
+        raise ValueError("The CSV file contains invalid or corrupted data.")
+    except UnicodeDecodeError:
+        raise ValueError("The CSV file has an unsupported text encoding.")
+    if len(df.columns) == 0:
+        raise ValueError("The CSV file does not contain any column headers.")
 
     report = {
         "dataset_name": Path(file_path).name,
