@@ -77,6 +77,200 @@ def validate_numeric_ranges(df, expected_ranges):
         "invalid_columns": invalid_columns
     }
 
+def validate_column_relationships(df, rules):
+    results = []
+
+    operators = {
+        "<": lambda a, b: a < b,
+        "<=": lambda a, b: a <= b,
+        ">": lambda a, b: a > b,
+        ">=": lambda a, b: a >= b,
+        "==": lambda a, b: a == b,
+        "!=": lambda a, b: a != b
+    }
+
+    for rule in rules:
+        column = rule["column"]
+        other_column = rule["other_column"]
+        operator = rule["operator"]
+
+        if column not in df.columns or other_column not in df.columns:
+            results.append({
+                "validation": "Column Relationship",
+                "passed": False,
+                "message": f"Missing column: {column} or {other_column}"
+            })
+            continue
+
+        if operator not in operators:
+            results.append({
+                "validation": "Column Relationship",
+                "passed": False,
+                "message": f"Unsupported operator: {operator}"
+            })
+            continue
+
+        first = pd.to_numeric(df[column], errors="coerce")
+        second = pd.to_numeric(df[other_column], errors="coerce")
+
+        valid_rows = df[column].notna() & df[other_column].notna()
+
+        valid_comparisons = (
+            first.notna() & second.notna()
+        )
+
+        invalid_rows = valid_rows & (
+            ~valid_comparisons |
+            ~operators[operator](first, second)
+        )
+
+        results.append({
+            "validation": f"{column} {operator} {other_column}",
+            "passed": not invalid_rows.any(),
+            "invalid_rows": df.index[invalid_rows].tolist(),
+            "message": (
+                "All column relationships are valid."
+                if not invalid_rows.any()
+                else "Invalid column relationships found."
+            )
+        })
+
+    return results 
+
+def validate_conditional_rules(df, rules):
+    results = []
+
+    for rule in rules:
+        condition_column = rule["condition_column"]
+        condition_value = rule["condition_value"]
+        target_column = rule["target_column"]
+
+        if condition_column not in df.columns or target_column not in df.columns:
+            results.append({
+                "validation": "Conditional Validation",
+                "passed": False,
+                "message": f"Missing column: {condition_column} or {target_column}"
+            })
+            continue
+
+        condition = df[condition_column] == condition_value
+
+        invalid_rows = df.index[
+            condition & (
+                df[target_column].isna() |
+                df[target_column].astype(str).str.strip().eq("")
+            )
+        ]
+
+        results.append({
+            "validation": f"{target_column} required when {condition_column} = {condition_value}",
+            "passed": len(invalid_rows) == 0,
+            "invalid_rows": invalid_rows.tolist(),
+            "message": (
+                "Conditional rule passed."
+                if len(invalid_rows) == 0
+                else "Conditional rule failed."
+            )
+        })
+
+    return results
+
+def validate_allowed_values(df, rules):
+    results = []
+
+    for rule in rules:
+        column = rule["column"]
+        allowed_values = rule["allowed_values"]
+
+        if column not in df.columns:
+            results.append({
+                "validation": "Allowed Values",
+                "passed": False,
+                "message": f"Column not found: {column}"
+            })
+            continue
+
+        invalid_rows = df.index[
+            df[column].notna() &
+            ~df[column].isin(allowed_values)
+        ]
+
+        results.append({
+            "validation": f"Allowed Values: {column}",
+            "passed": len(invalid_rows) == 0,
+            "invalid_rows": invalid_rows.tolist(),
+            "invalid_values": df.loc[invalid_rows, column].tolist(),
+            "message": (
+                "All values are allowed."
+                if len(invalid_rows) == 0
+                else "Invalid values found."
+            )
+        })
+
+    return results
+
+def validate_custom_business_rules(df, rules):
+    results = []
+
+    for rule in rules:
+        column = rule["column"]
+        operator = rule["operator"]
+        expected_value = rule["value"]
+
+        if column not in df.columns:
+            results.append({
+                "validation": "Custom Business Rule",
+                "passed": False,
+                "message": f"Column not found: {column}"
+            })
+            continue
+
+        series = df[column]
+
+        if operator in [">", ">=", "<", "<="]:
+            values = pd.to_numeric(series, errors="coerce")
+            expected = float(expected_value)
+
+            operations = {
+                ">": values > expected,
+                ">=": values >= expected,
+                "<": values < expected,
+                "<=": values <= expected
+            }
+
+            valid = operations[operator]
+
+        elif operator == "==":
+            valid = series == expected_value
+
+        elif operator == "!=":
+            valid = series != expected_value
+
+        else:
+            results.append({
+                "validation": "Custom Business Rule",
+                "passed": False,
+                "message": f"Unsupported operator: {operator}"
+            })
+            continue
+
+        invalid_rows = df.index[
+            series.notna() & ~valid
+        ]
+
+        results.append({
+            "validation": f"{column} {operator} {expected_value}",
+            "passed": len(invalid_rows) == 0,
+            "invalid_rows": invalid_rows.tolist(),
+            "message": (
+                "Business rule passed."
+                if len(invalid_rows) == 0
+                else "Business rule failed."
+            )
+        })
+
+    return results
+
 def validate_email_format(df, email_columns):
     """
     Validate email formats while handling missing values separately.
@@ -218,6 +412,148 @@ def detect_anomalies(df):
         "anomalies": anomalies
     }
 
+def run_advanced_validations(
+    df,
+    relationship_rules=None,
+    conditional_rules=None,
+    allowed_value_rules=None,
+    business_rules=None
+):
+    relationship_rules = relationship_rules or []
+    conditional_rules = conditional_rules or []
+    allowed_value_rules = allowed_value_rules or []
+    business_rules = business_rules or []
+
+    results = []
+
+    results.extend(
+        validate_column_relationships(df, relationship_rules)
+    )
+
+    results.extend(
+        validate_conditional_rules(df, conditional_rules)
+    )
+
+    results.extend(
+        validate_allowed_values(df, allowed_value_rules)
+    )
+
+    results.extend(
+        validate_custom_business_rules(df, business_rules)
+    )
+
+    total_checks = len(results)
+    passed_checks = sum(1 for result in results if result["passed"])
+    failed_checks = total_checks - passed_checks
+
+    return {
+        "total_checks": total_checks,
+        "passed_checks": passed_checks,
+        "failed_checks": failed_checks,
+        "overall_status": "PASSED" if failed_checks == 0 else "FAILED",
+        "results": results
+    }
+
+def load_validation_rules(config_path="config/validation_rules.json"):
+    config_path = Path(config_path)
+
+    if not config_path.exists():
+        raise FileNotFoundError(
+            f"Validation rules file not found: {config_path}"
+        )
+
+    with open(config_path, "r", encoding="utf-8") as file:
+        rules = json.load(file)
+
+    if not isinstance(rules, dict):
+        raise ValueError("Validation configuration must be a JSON object.")
+
+    rule_keys = [
+        "relationship_rules",
+        "conditional_rules",
+        "allowed_value_rules",
+        "business_rules"
+    ]
+
+    for key in rule_keys:
+        if key not in rules:
+            rules[key] = []
+
+        if not isinstance(rules[key], list):
+            raise ValueError(f"'{key}' must contain a list of rules.")
+
+    return rules
+def validate_with_config(df, config_path="config/validation_rules.json"):
+    rules = load_validation_rules(config_path)
+
+    report = run_advanced_validations(
+        df,
+        relationship_rules=rules["relationship_rules"],
+        conditional_rules=rules["conditional_rules"],
+        allowed_value_rules=rules["allowed_value_rules"],
+        business_rules=rules["business_rules"]
+    )
+
+    return report
+
+def validate_dataset_with_config(
+    input_path="results/cleaned_data.csv",
+    config_path="config/validation_rules.json"
+):
+    input_path = Path(input_path)
+
+    if not input_path.exists():
+        raise FileNotFoundError(
+            f"Dataset not found: {input_path}"
+        )
+
+    if input_path.suffix.lower() != ".csv":
+        raise ValueError("Only CSV files are supported.")
+
+    try:
+        df = pd.read_csv(input_path)
+    except (pd.errors.EmptyDataError, pd.errors.ParserError) as error:
+        raise ValueError(f"Invalid CSV file: {error}") from error
+
+    if df.empty:
+        raise ValueError("Dataset contains no records.")
+
+    return validate_with_config(df, config_path)
+
+def run_and_save_advanced_validation(
+    input_path="results/cleaned_data.csv",
+    config_path="config/validation_rules.json",
+    output_path="results/advanced_validation_report.json"
+):
+    report = validate_dataset_with_config(
+        input_path=input_path,
+        config_path=config_path
+    )
+
+    report["report_type"] = "Advanced Validation"
+    saved_path = save_validation_report(report, output_path)
+
+    return {
+        "report": report,
+        "saved_path": str(saved_path)
+    }
+
+def print_advanced_validation_summary(result):
+    report = result["report"]
+
+    print("\nADVANCED DATA VALIDATION REPORT")
+    print("--------------------------------")
+    print(f"Total Checks: {report['total_checks']}")
+    print(f"Passed Checks: {report['passed_checks']}")
+    print(f"Failed Checks: {report['failed_checks']}")
+    print(f"Overall Status: {report['overall_status']}")
+    print(f"Report Saved: {result['saved_path']}")
+
+    print("\nValidation Details:")
+    for item in report["results"]:
+        status = "PASSED" if item["passed"] else "FAILED"
+        print(f"{item['validation']}: {status}")
+
 def run_all_validations(
     df,
     required_columns,
@@ -351,7 +687,7 @@ def validate_dataset_file(
 
     save_validation_report(report, output_path)
 
-    returnreport
+    return report
 
 
 if __name__ == "__main__":
@@ -382,6 +718,9 @@ if __name__ == "__main__":
             f"Overall Status: "
             f"{'PASSED' if report['overall_passed'] else 'FAILED'}"
         )
+        advanced_result = run_and_save_advanced_validation()
+
+        print_advanced_validation_summary(advanced_result)
 
     except (FileNotFoundError, ValueError) as error:
         print(f"VALIDATION ERROR: {error}")

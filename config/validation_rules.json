@@ -1,0 +1,33 @@
+{
+    "relationship_rules": [],
+    "conditional_rules": [
+        {
+            "condition_column": "payment_method",
+            "condition_value": "UPI",
+            "target_column": "email"
+        }
+    ],
+    "allowed_value_rules": [
+        {
+            "column": "payment_method",
+            "allowed_values": ["Cash", "UPI", "Card", "Net Banking"]
+        }
+    ],
+    "business_rules": [
+        {
+            "column": "age",
+            "operator": ">=",
+            "value": 18
+        },
+        {
+            "column": "price",
+            "operator": ">",
+            "value": 0
+        },
+        {
+            "column": "quantity",
+            "operator": ">=",
+            "value": 1
+        }
+    ]
+}
