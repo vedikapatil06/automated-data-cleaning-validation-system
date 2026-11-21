@@ -665,8 +665,8 @@ def validate_dataset_file(
         "age": "float64",
         "city": "object",
         "product": "object",
-        "quantity": "int64",
-        "price": "int64",
+        "quantity": "float64",
+        "price": "float64",
         "payment_method": "object"
     }
 
